@@ -27,6 +27,53 @@ However, naive computation of linear CKA requires maintaining the activations ac
 pip install torch_cka
 ``` -->
 
+### Code for Generating Figure 1 in the Main Text
+```python
+import torch
+from torch_cka import CKA
+
+def plot_results(hsic_matrix,
+                    model_1_name: str=None,
+                    model_2_name: str=None,
+                    save_path: str = None,
+                    title: str = None):
+    fig, ax = plt.subplots(nrows=1,ncols=1)
+    hsic_matrix = np.sort(hsic_matrix) # sort
+    im = ax.imshow(hsic_matrix.reshape(int(np.sqrt(hsic_matrix.shape[0])),int(np.sqrt(hsic_matrix.shape[0]))), origin='lower', cmap='Spectral_r')        
+    ax.set_xlabel(f"Sample Index", fontsize=15)
+    ax.set_ylabel(f"Sample Index", fontsize=15)     
+    if title is not None:
+        ax.set_title(f"{title}", fontsize=15)
+    else:
+        ax.set_title(f"CKA scores of {model_1_name} vs. {model_2_name}", fontsize=15)
+    add_colorbar(im)
+    plt.tight_layout()
+    if save_path is not None:
+        plt.savefig(save_path, bbox_inches='tight', pad_inches=0, dpi=500)
+    plt.show()   
+
+def cka_plot(teacher, student, data_loader,**kwargs):
+    cka = CKA(student, teacher,
+            model1_name="ResNet18", model2_name="ResNet50",
+            # model1_layers=layer_names_resnet18, # List of layers to extract features from
+            # model2_layers=layer_names_resnet34, # extracts all layer features by default            
+            device='cuda')
+    cka.compare_minibatches(data_loader)
+    results = cka.export()
+    print("Results have returned !!! ")
+    with open('./test.pkl', 'wb') as handle:
+        pickle.dump(results, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    plot_results(results['CKA'], "ResNet18 (ICKD)", "ResNet50", save_path="test.png"  
+```
+
+![alt text](assets/resnet_compare_34_18_fc.png "Each pane of the heatmap represents the CKA similarity scores of all sample pairs within a minibatch between the two neural networks (e.g., ResNet18 vs. ResNet34). And the x and y axes indexing the minibatches. A total of 400 mini-batches of data are displayed.")
+
+![alt text](assets/resnet_compare_152_18_fc.png "Each pane of the heatmap represents the CKA similarity scores of all sample pairs within a minibatch between the two neural networks (e.g., ResNet18 vs. ResNet34). And the x and y axes indexing the minibatches. A total of 400 mini-batches of data are displayed.")
+
+## Other Heatmaps 
+
+`torch_cka` can be used with any pytorch model (subclass of `nn.Module`) and can be used with pretrained models available from popular sources like torchHub, timm, huggingface etc. Some examples of where this package can come in handy are illustrated below.
+
 ### Usage
 ```python
 from torch_cka import CKA
@@ -48,10 +95,9 @@ cka.compare(dataloader) # secondary dataloader is optional
 
 results = cka.export()  # returns a dict that contains model names, layer names
                         # and the CKA matrix
+cka.plot_results(save_path="diagonal_compare_test.png")
 ```
 
-## Examples
-`torch_cka` can be used with any pytorch model (subclass of `nn.Module`) and can be used with pretrained models available from popular sources like torchHub, timm, huggingface etc. Some examples of where this package can come in handy are illustrated below.
 
 ### Comparing the effect of Depth
 A simple experiment is to analyse the features learned by two architectures of the same family - ResNets but of different depths. Taking two ResNets - ResNet18 and ResNet34 - pre-trained on the Imagenet dataset, we can analyse how they produce their features on, say CIFAR10 for simplicity. This comparison is shown as a heatmap below. 
@@ -98,5 +144,3 @@ This can also be quite useful in studying the performance of a model on downstre
 
 
 
-
-x

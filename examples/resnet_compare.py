@@ -56,6 +56,6 @@ cka = CKA(model1, model2,
         model1_name="ResNet50", model2_name="WideResNet50",
         device='cuda')
 
-cka.compare(dataloader)
+cka.compare_depth(dataloader)
 
 cka.plot_results(save_path="../assets/resnet-resnet_compare.png")
