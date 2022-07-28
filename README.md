@@ -8,7 +8,7 @@ Centered Kernel Alignment (CKA) is a representation similarity metric that is wi
 
 Where ***K*** and ***L*** are similarity matrices of ***X*** and ***Y*** respectively.
 
-However, naive computation of linear CKA requires maintaining the activations across the entire dataset in memory, which is challenging for wide and deep networks. To reduce memory consumption, a minibatch version of CKA was proposed to compute linear CKA by averaging HSIC scores over <span style="color:blue">k</span> minibatches:
+However, naive computation of linear CKA requires maintaining the activations across the entire dataset in memory, which is challenging for wide and deep networks. To reduce memory consumption, a minibatch version of CKA was proposed to compute linear CKA by averaging HSIC scores over <span style="color:blue">$k$</span> minibatches:
 
 <!-- However, the above formula is not scalable against deep architectures and large datasets. Therefore, a minibatch version can be constructed that uses an unbiased estimator of the HSIC as -->
 
