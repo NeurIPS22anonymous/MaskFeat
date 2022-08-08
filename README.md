@@ -2,6 +2,11 @@
 This is a temporary, anonymous repository for additional explanations of the questions/comments raised by NeurIPS 2022 reviewers.
 
 
+## 0. Capacity-Performance Gap Issue
+![alt text](assets/new_intro.png "Larger models can be better Teachers")
+Although, we have witnessed performance gains of MASKFEAT on the existing knowledge distillation framework, further analysis of the claim better teacher makes better student is desired. To this end, we train a plain CNN with batch normalization, skip connection and ReLU activation as the student. It is distilled by large teachers of 4, 6, 8, and 10 layers on both CIFAR10 and CIFAR100. As expected, by increasing the student number of layers, the student performance gain is initially increased and then decreased due to the capacity mismatch by conventional KD, as illustrated in the above Figure. On the other hand, with MASKFEAT, the student performance gain is positively correlated to the student size. This suggests that our model does make a bigger model a better teacher.
+
+
 ## 1. About Centered Kernel Alignment
 Centered Kernel Alignment (CKA) is a representation similarity metric that is widely used for understanding the representations learned by neural networks. Specifically, CKA takes two feature maps / representations ***X*** and ***Y*** as input and computes their normalized similarity (in terms of the Hilbert-Schmidt Independence Criterion (HSIC)) as
 <img src="assets/cka.png" alt="CKA original version" width="60%" style="display: block; margin-left: auto; margin-right: auto;">
